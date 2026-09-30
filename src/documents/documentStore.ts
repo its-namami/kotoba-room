@@ -1,8 +1,10 @@
-import type { DocumentRecord, MixerState } from "./documentTypes";
+import type { DocumentRecord, MixerLevels, MixerState, SoundLayer } from "./documentTypes";
 
 const STORAGE_KEY = "kotoba-room.documents";
 const ACTIVE_KEY = "kotoba-room.active";
-const defaultMixer: MixerState = { master: 0.35, brown: 0, pink: 0, rain: 0, hum: 0, muted: false };
+const layers: SoundLayer[] = ["brown", "pink", "white", "rain", "storm", "wind", "stream", "waves", "hum", "fan", "vinyl", "fire"];
+export const defaultLevels = Object.fromEntries(layers.map((layer) => [layer, 0])) as MixerLevels;
+const defaultMixer: MixerState = { master: 0.35, muted: false, levels: { ...defaultLevels } };
 
 function newId(): string {
   return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -10,14 +12,18 @@ function newId(): string {
 
 export function makeDocument(title = "Untitled room"): DocumentRecord {
   const now = Date.now();
-  return { id: newId(), title, body: "", createdAt: now, updatedAt: now, selectedEnvironmentId: "ink", mixer: { ...defaultMixer } };
+  return { id: newId(), title, body: "", createdAt: now, updatedAt: now, selectedEnvironmentId: "ink", mixer: { master: defaultMixer.master, muted: false, levels: { ...defaultLevels } }, timerDuration: 25 };
+}
+
+function normalize(document: DocumentRecord): DocumentRecord {
+  const fresh = makeDocument(document.title || "Untitled room");
+  return { ...fresh, ...document, mixer: { ...fresh.mixer, ...(document.mixer ?? {}), levels: { ...defaultLevels, ...(document.mixer?.levels ?? {}) } } };
 }
 
 export function loadDocuments(): { documents: DocumentRecord[]; activeId: string | null } {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]") as DocumentRecord[];
-    const documents = Array.isArray(parsed) ? parsed : [];
-    return { documents, activeId: localStorage.getItem(ACTIVE_KEY) };
+    return { documents: Array.isArray(parsed) ? parsed.map(normalize) : [], activeId: localStorage.getItem(ACTIVE_KEY) };
   } catch {
     return { documents: [], activeId: null };
   }
@@ -28,6 +34,6 @@ export function saveDocuments(documents: DocumentRecord[], activeId: string | nu
     localStorage.setItem(STORAGE_KEY, JSON.stringify(documents));
     if (activeId) localStorage.setItem(ACTIVE_KEY, activeId);
   } catch {
-    // Private browsing and storage quotas should not interrupt writing.
+    // Storage failure must not interrupt writing.
   }
 }

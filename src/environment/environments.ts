@@ -9,8 +9,10 @@ export interface Environment {
 }
 
 export const environments: Environment[] = [
-  { id: "ink", name: "Ink", note: "charcoal / deep blue / muted green", colors: ["#10171b", "#26343d", "#203b35", "#1e2630"], ink: "#edf1ec", paper: "#171d20", accent: "#9eb8a4" },
-  { id: "lantern", name: "Lantern", note: "rust / plum / amber", colors: ["#4c2525", "#642f3c", "#38243c", "#7b4d2e"], ink: "#fff4e4", paper: "#2b2021", accent: "#e4a26d" },
-  { id: "rain", name: "Rain Window", note: "slate / violet / pale cyan", colors: ["#1d3040", "#3b4c65", "#38324f", "#315c68"], ink: "#edf6f5", paper: "#202b35", accent: "#9bd4d6" },
-  { id: "moss", name: "Moss Paper", note: "deep green / olive / beige", colors: ["#1c3026", "#40502a", "#615b32", "#3f4530"], ink: "#f2f1df", paper: "#263126", accent: "#c2c984" }
+  { id: "ink", name: "Ink", note: "graphite · navy · dark teal", colors: ["#11171b", "#1b2c3b", "#21433f", "#263a45"], ink: "#edf2eb", paper: "#11191d", accent: "#a8c6b2" },
+  { id: "lantern", name: "Lantern", note: "wine · rust · amber", colors: ["#3b1d2b", "#6b302a", "#7c3f36", "#9b683d"], ink: "#fff0dc", paper: "#291c20", accent: "#e3a56c" },
+  { id: "rain", name: "Rain Window", note: "slate · violet · cyan", colors: ["#1d2c3a", "#40516a", "#493c61", "#3e6b73"], ink: "#e8f3f2", paper: "#192832", accent: "#a7d8d8" },
+  { id: "moss", name: "Moss Paper", note: "forest · olive · beige", colors: ["#1a3025", "#44502c", "#665c36", "#87915a"], ink: "#f1f0df", paper: "#223026", accent: "#c5ca8c" },
+  { id: "night-train", name: "Night Train", note: "black-blue · purple · dim red", colors: ["#0b1421", "#251d40", "#4a2639", "#766045"], ink: "#f0eaf0", paper: "#10131e", accent: "#c5a6a4" },
+  { id: "dawn", name: "Dawn", note: "violet · rose · muted orange", colors: ["#241d38", "#593b54", "#92554b", "#b38862"], ink: "#fff0e7", paper: "#28202d", accent: "#e0b08f" }
 ];

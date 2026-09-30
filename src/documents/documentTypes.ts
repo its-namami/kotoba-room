@@ -1,4 +1,5 @@
-export type SoundLayer = "brown" | "pink" | "white" | "rain" | "storm" | "wind" | "stream" | "waves" | "hum" | "fan" | "vinyl" | "fire";
+export type SoundLayer = "brown" | "pink" | "white" | "rain" | "storm" | "wind" | "hum" | "fan" | "vinyl" | "fire";
+export type Texture = "drift" | "wash";
 
 export type MixerLevels = Record<SoundLayer, number>;
 
@@ -17,4 +18,5 @@ export interface DocumentRecord {
   selectedEnvironmentId: string;
   mixer: MixerState;
   timerDuration: number;
+  texture: Texture;
 }

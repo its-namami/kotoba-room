@@ -2,7 +2,7 @@ import type { DocumentRecord, MixerLevels, MixerState, SoundLayer } from "./docu
 
 const STORAGE_KEY = "kotoba-room.documents";
 const ACTIVE_KEY = "kotoba-room.active";
-const layers: SoundLayer[] = ["brown", "pink", "white", "rain", "storm", "wind", "stream", "waves", "hum", "fan", "vinyl", "fire"];
+const layers: SoundLayer[] = ["brown", "pink", "white", "rain", "storm", "wind", "hum", "fan", "vinyl", "fire"];
 export const defaultLevels = Object.fromEntries(layers.map((layer) => [layer, 0])) as MixerLevels;
 const defaultMixer: MixerState = { master: 0.35, muted: false, levels: { ...defaultLevels } };
 
@@ -12,12 +12,12 @@ function newId(): string {
 
 export function makeDocument(title = "Untitled room"): DocumentRecord {
   const now = Date.now();
-  return { id: newId(), title, body: "", createdAt: now, updatedAt: now, selectedEnvironmentId: "ink", mixer: { master: defaultMixer.master, muted: false, levels: { ...defaultLevels } }, timerDuration: 25 };
+  return { id: newId(), title, body: "", createdAt: now, updatedAt: now, selectedEnvironmentId: "ink", mixer: { master: defaultMixer.master, muted: false, levels: { ...defaultLevels } }, timerDuration: 25, texture: "drift" };
 }
 
 function normalize(document: DocumentRecord): DocumentRecord {
   const fresh = makeDocument(document.title || "Untitled room");
-  return { ...fresh, ...document, mixer: { ...fresh.mixer, ...(document.mixer ?? {}), levels: { ...defaultLevels, ...(document.mixer?.levels ?? {}) } } };
+  return { ...fresh, ...document, texture: document.texture === "wash" ? "wash" : "drift", mixer: { ...fresh.mixer, ...(document.mixer ?? {}), levels: { ...defaultLevels, ...(document.mixer?.levels ?? {}) } } };
 }
 
 export function loadDocuments(): { documents: DocumentRecord[]; activeId: string | null } {

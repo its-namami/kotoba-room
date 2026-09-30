@@ -7,7 +7,7 @@ button { color:inherit; border:0; cursor:pointer; }
 button:focus-visible, input:focus-visible, textarea:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
 .atmosphere, .atmosphere i { position:fixed; pointer-events:none; inset:0; }
 .atmosphere { z-index:-2; overflow:hidden; background:var(--paper); }
-.atmosphere.wash { background:#62c6c0; animation: color-wash 224s linear infinite; }
+.atmosphere.wash { background:var(--wash-1); animation: color-wash 224s linear infinite; }
 .atmosphere.wash::after { position:absolute; content:""; inset:0; background:linear-gradient(180deg,#0714192e,#07141955); }
 .atmosphere.wash i { display:none; }
 .atmosphere i { width:68vw; height:68vw; border-radius:48%; filter:blur(100px); opacity:.4; animation: drift 105s ease-in-out infinite alternate; }
@@ -17,11 +17,11 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline:2px 
 .atmosphere i:nth-child(4) { background:var(--field-4); right:-22vw; bottom:-38vw; animation-delay:-61s; animation-duration:98s; }
 @keyframes drift { from { transform:translate3d(-4%,-3%,0) scale(1); opacity:.27; } to { transform:translate3d(6%,5%,0) scale(1.15); opacity:.48; } }
 @keyframes color-wash {
-  0%, 8% { background:#62c6c0; } 12%, 20% { background:#83cdb0; }
-  24%, 32% { background:#3c9a69; } 36%, 44% { background:#233d85; }
-  48%, 56% { background:#65509e; } 60%, 68% { background:#aa617f; }
-  72%, 80% { background:#ca725f; } 84%, 92% { background:#c89a4b; }
-  100% { background:#62c6c0; }
+  0%, 8% { background:var(--wash-1); } 12%, 20% { background:var(--wash-2); }
+  24%, 32% { background:var(--wash-3); } 36%, 44% { background:var(--wash-4); }
+  48%, 56% { background:var(--wash-5); } 60%, 68% { background:var(--wash-6); }
+  72%, 80% { background:var(--wash-7); } 84%, 92% { background:var(--wash-8); }
+  100% { background:var(--wash-1); }
 }
 .topbar { position:fixed; z-index:5; inset:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:25px 32px; background:linear-gradient(180deg,#0b101080,transparent); transition:opacity .7s, transform .7s; }
 .brand { background:transparent; padding:4px 0; color:var(--ink); font-size:11px; font-weight:700; letter-spacing:.18em; }

@@ -63,6 +63,7 @@ function setEnvironmentVars(): void {
   document.documentElement.style.setProperty("--paper", environment.paper);
   document.documentElement.style.setProperty("--accent", environment.accent);
   environment.colors.forEach((color, index) => document.documentElement.style.setProperty(`--field-${index + 1}`, color));
+  environment.washColors.forEach((color, index) => document.documentElement.style.setProperty(`--wash-${index + 1}`, color));
 }
 
 function render(): void {

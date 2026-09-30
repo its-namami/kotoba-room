@@ -1,5 +1,5 @@
 export type SoundLayer = "brown" | "pink" | "white" | "rain" | "storm" | "wind" | "hum" | "fan" | "vinyl" | "fire";
-export type Texture = "drift" | "wash";
+export type Texture = "drift" | "wash" | "classic-wash";
 
 export type MixerLevels = Record<SoundLayer, number>;
 

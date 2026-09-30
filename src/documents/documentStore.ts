@@ -17,7 +17,7 @@ export function makeDocument(title = "Untitled room"): DocumentRecord {
 
 function normalize(document: DocumentRecord): DocumentRecord {
   const fresh = makeDocument(document.title || "Untitled room");
-  return { ...fresh, ...document, texture: document.texture === "wash" ? "wash" : "drift", mixer: { ...fresh.mixer, ...(document.mixer ?? {}), levels: { ...defaultLevels, ...(document.mixer?.levels ?? {}) } } };
+  return { ...fresh, ...document, texture: document.texture === "wash" || document.texture === "classic-wash" ? document.texture : "drift", mixer: { ...fresh.mixer, ...(document.mixer ?? {}), levels: { ...defaultLevels, ...(document.mixer?.levels ?? {}) } } };
 }
 
 export function loadDocuments(): { documents: DocumentRecord[]; activeId: string | null } {

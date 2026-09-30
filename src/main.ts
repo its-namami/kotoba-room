@@ -8,6 +8,7 @@ import { splitSentences } from "./documents/sentenceSplitter";
 type Mode = "write" | "read";
 type Modal = "library" | "sound" | "environment" | "timer" | null;
 interface Preset { name: string; environment: string; layers: Partial<Record<SoundLayer, number>>; timer: number; }
+const classicWashColors = ["#62c6c0", "#83cdb0", "#3c9a69", "#233d85", "#65509e", "#aa617f", "#ca725f", "#c89a4b"];
 
 const presets: Preset[] = [
   { name: "Rain Desk", environment: "rain", layers: { rain: 0.28, pink: 0.06, hum: 0.04 }, timer: 25 },
@@ -64,6 +65,7 @@ function setEnvironmentVars(): void {
   document.documentElement.style.setProperty("--accent", environment.accent);
   environment.colors.forEach((color, index) => document.documentElement.style.setProperty(`--field-${index + 1}`, color));
   environment.washColors.forEach((color, index) => document.documentElement.style.setProperty(`--wash-${index + 1}`, color));
+  classicWashColors.forEach((color, index) => document.documentElement.style.setProperty(`--classic-wash-${index + 1}`, color));
 }
 
 function render(): void {
@@ -125,7 +127,7 @@ function distance(index: number): string {
 
 function modalMarkup(): string {
   if (!modal) return "";
-  if (modal === "environment")   return `<div class="modal-backdrop" data-action="close-modal"><section class="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title"><button class="close" data-action="close-modal">×</button><p class="eyebrow">Environment</p><h2 id="panel-title">Choose a room</h2><div class="environment-list">${environments.map((environment) => `<button class="${environment.id === currentEnvironment().id ? "chosen" : ""}" data-environment="${environment.id}"><strong>${environment.name}</strong><small>${environment.note}</small></button>`).join("")}</div><div class="texture-choice"><p class="eyebrow">Texture</p><button data-texture="drift" class="${getActive().texture === "drift" ? "chosen" : ""}">Drift</button><button data-texture="wash" class="${getActive().texture === "wash" ? "chosen" : ""}">Color Wash</button></div></section></div>`;
+  if (modal === "environment")     return `<div class="modal-backdrop" data-action="close-modal"><section class="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title"><button class="close" data-action="close-modal">×</button><p class="eyebrow">Environment</p><h2 id="panel-title">Choose a room</h2><div class="environment-list">${environments.map((environment) => `<button class="${environment.id === currentEnvironment().id ? "chosen" : ""}" data-environment="${environment.id}"><strong>${environment.name}</strong><small>${environment.note}</small></button>`).join("")}</div><div class="texture-choice"><p class="eyebrow">Texture</p><button data-texture="drift" class="${getActive().texture === "drift" ? "chosen" : ""}">Drift</button><button data-texture="wash" class="${getActive().texture === "wash" ? "chosen" : ""}">Color Wash</button><button data-texture="classic-wash" class="${getActive().texture === "classic-wash" ? "chosen" : ""}">Classic Wash</button></div></section></div>`;
   if (modal === "timer") return `<div class="modal-backdrop" data-action="close-modal"><section class="panel timer-panel" role="dialog" aria-modal="true" aria-labelledby="panel-title"><button class="close" data-action="close-modal">×</button><p class="eyebrow">Focus timer</p><h2 id="panel-title">${timerRunning ? formatTime(timerSeconds) : "A little time for text"}</h2><div class="timer-presets">${[25, 45, 60].map((minutes) => `<button data-timer="${minutes}" class="${getActive().timerDuration === minutes ? "chosen" : ""}">${minutes} min</button>`).join("")}</div><div class="timer-actions"><button data-action="timer-start">${timerRunning ? "Pause" : "Start"}</button><button data-action="timer-reset">Reset</button></div><p class="panel-note">The timer stays quiet while you write.</p></section></div>`;
   if (modal === "sound") return soundPanel();
   return libraryPanel();
@@ -195,7 +197,7 @@ function wireEvents(): void {
   }));
   app.querySelectorAll<HTMLElement>("[data-sentence]").forEach((element) => element.addEventListener("click", () => { activeSentence = Number(element.dataset.sentence); if (!focusEnabled) { focusEnabled = true; render(); } updateReaderFocus(); }));
   app.querySelectorAll<HTMLElement>("[data-environment]").forEach((element) => element.addEventListener("click", () => { getActive().selectedEnvironmentId = element.dataset.environment ?? "ink"; persist(); modal = null; render(); }));
-  app.querySelectorAll<HTMLElement>("[data-texture]").forEach((element) => element.addEventListener("click", () => { getActive().texture = element.dataset.texture === "wash" ? "wash" : "drift"; persist(); modal = null; render(); }));
+  app.querySelectorAll<HTMLElement>("[data-texture]").forEach((element) => element.addEventListener("click", () => { const texture = element.dataset.texture; getActive().texture = texture === "wash" || texture === "classic-wash" ? texture : "drift"; persist(); modal = null; render(); }));
   app.querySelectorAll<HTMLElement>("[data-document]").forEach((element) => element.addEventListener("click", () => { activeId = element.dataset.document ?? activeId; modal = null; persist(); render(); }));
   app.querySelectorAll<HTMLElement>("[data-rename]").forEach((element) => element.addEventListener("click", () => { const item = documents.find((entry) => entry.id === element.dataset.rename); const title = item && window.prompt("Name this room", item.title); if (item && title?.trim()) { item.title = title.trim(); persist(); render(); } }));
   app.querySelectorAll<HTMLElement>("[data-delete]").forEach((element) => element.addEventListener("click", () => { if (documents.length > 1 && window.confirm("Delete this room?")) { documents = documents.filter((item) => item.id !== element.dataset.delete); if (activeId === element.dataset.delete) activeId = documents[0].id; persist(); render(); } }));

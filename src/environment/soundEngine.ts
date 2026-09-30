@@ -40,19 +40,36 @@ export class SoundEngine {
       if (layer === "brown") data[index] = brown * 3;
       else if (layer === "pink") data[index] = (pink * 2 + white * 0.12) * 1.5;
       else if (layer === "white") data[index] = white * 0.28;
-      else if (layer === "rain") data[index] = Math.random() < 0.008 ? white * 0.9 : pink * 0.22;
-      else if (layer === "storm") data[index] = (Math.random() < 0.012 ? white * 1.1 : pink * 0.35) + brown * 0.7;
-      else if (layer === "wind") data[index] = (brown * 0.8 + white * 0.08) * (0.45 + Math.sin(time * 0.42) * 0.35);
+      else if (layer === "rain") data[index] = Math.random() < 0.0018 ? white * 0.7 : pink * 0.16;
+      else if (layer === "storm") data[index] = (Math.random() < 0.0025 ? white * 0.85 : pink * 0.13) + brown * 0.38;
+      else if (layer === "wind") data[index] = (white * 0.3 + brown * 0.4) * (0.35 + Math.sin(time * 0.32) * 0.25);
       else if (layer === "fan") data[index] = (white * 0.12 + Math.sin(time * 2 * Math.PI * 112) * 0.1) * (0.8 + Math.sin(time * 0.7) * 0.1);
-      else if (layer === "vinyl") data[index] = Math.random() < 0.0007 ? white * 1.1 : white * 0.025;
-      else data[index] = Math.random() < 0.0012 ? white * 0.9 : (brown * 0.12 + white * 0.02);
+      else if (layer === "vinyl") data[index] = Math.random() < 0.00018 ? white * 0.75 : white * 0.008;
+      else data[index] = Math.random() < 0.0008 ? white * 0.65 : (brown * 0.08 + white * 0.012);
     }
     const source = this.context.createBufferSource();
     const gain = this.context.createGain();
+    const filter = this.context.createBiquadFilter();
+    if (layer === "rain") {
+      filter.type = "highpass";
+      filter.frequency.value = 1700;
+    } else if (layer === "storm") {
+      filter.type = "lowpass";
+      filter.frequency.value = 3400;
+    } else if (layer === "wind") {
+      filter.type = "lowpass";
+      filter.frequency.value = 850;
+    } else if (layer === "vinyl") {
+      filter.type = "highpass";
+      filter.frequency.value = 1800;
+    } else {
+      filter.type = "lowpass";
+      filter.frequency.value = layer === "fan" ? 1800 : 7000;
+    }
     source.buffer = buffer;
     source.loop = true;
     gain.gain.value = 0;
-    source.connect(gain).connect(this.master);
+    source.connect(filter).connect(gain).connect(this.master);
     source.start();
     this.gains.set(layer, gain);
     this.sources.push(source);

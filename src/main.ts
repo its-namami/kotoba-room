@@ -99,7 +99,7 @@ function writeView(item: DocumentRecord): string {
 function readView(item: DocumentRecord): string {
   const sentences = splitSentences(item.body);
   if (!sentences.length) return `<section class="reading-room empty-reading"><h1>${escapeHtml(item.title)}</h1><p>Your room is ready when you are.</p><button data-action="write">Begin writing</button></section>`;
-  return `<section class="reading-room"><div class="reading-heading"><span>${escapeHtml(item.title)}</span><button data-action="write">Edit text</button></div><article class="${focusEnabled ? "focus-on" : ""}">${structuredReading(item.body)}</article><div class="reading-controls"><button data-action="previous" ${activeSentence === 0 ? "disabled" : ""}>← Previous sentence</button><button data-action="next" ${activeSentence >= sentences.length - 1 ? "disabled" : ""}>Next sentence →</button><button data-action="copy">Copy sentence</button><button data-action="context">Copy context</button><button data-action="focus" class="${focusEnabled ? "active" : ""}">Sentence focus</button></div></section>`;
+  return `<section class="reading-room"><div class="reading-heading"><span>${escapeHtml(item.title)}</span><button data-action="write">Edit text</button></div><article class="${focusEnabled ? "focus-on" : ""}">${structuredReading(item.body)}</article><div class="reading-controls">${focusEnabled ? `<button data-action="previous" ${activeSentence === 0 ? "disabled" : ""}>← Previous sentence</button><button data-action="next" ${activeSentence >= sentences.length - 1 ? "disabled" : ""}>Next sentence →</button>` : ""}<button data-action="copy">Copy sentence</button><button data-action="context">Copy context</button><button data-action="focus" class="${focusEnabled ? "active" : ""}">Sentence focus</button></div></section>`;
 }
 
 function structuredReading(body: string): string {
@@ -184,15 +184,15 @@ function wireEvents(): void {
     if (action === "close-modal" && (event.target as HTMLElement).dataset.action === "close-modal") { modal = null; render(); }
     if (action === "new") { const created = makeDocument(); documents.unshift(created); activeId = created.id; modal = null; mode = "write"; persist(); render(); }
     if (action === "duplicate") { const copy = { ...getActive(), id: crypto.randomUUID?.() ?? `${Date.now()}`, title: `${getActive().title} copy`, createdAt: Date.now(), updatedAt: Date.now(), mixer: { ...getActive().mixer, levels: { ...getActive().mixer.levels } } }; documents.unshift(copy); activeId = copy.id; modal = null; persist(); render(); }
-    if (action === "previous") { activeSentence = Math.max(0, activeSentence - 1); render(); focusActive(); }
-    if (action === "next") { activeSentence = Math.min(splitSentences(getActive().body).length - 1, activeSentence + 1); render(); focusActive(); }
+    if (action === "previous") { activeSentence = Math.max(0, activeSentence - 1); updateReaderFocus(); }
+    if (action === "next") { activeSentence = Math.min(splitSentences(getActive().body).length - 1, activeSentence + 1); updateReaderFocus(); }
     if (action === "copy" || action === "context") void copySentence(action === "context");
     if (action === "mute") { getActive().mixer.muted = !getActive().mixer.muted; sound.update(getActive().mixer); persist(); render(); }
     if (action === "timer-start") startTimer();
     if (action === "timer-reset") { timerRunning = false; timerSeconds = 0; window.clearInterval(timerInterval); render(); }
     if (action === "export-txt" || action === "export-md") exportDocument(action === "export-md" ? "md" : "txt");
   }));
-  app.querySelectorAll<HTMLElement>("[data-sentence]").forEach((element) => element.addEventListener("click", () => { activeSentence = Number(element.dataset.sentence); focusEnabled = true; render(); focusActive(); }));
+  app.querySelectorAll<HTMLElement>("[data-sentence]").forEach((element) => element.addEventListener("click", () => { activeSentence = Number(element.dataset.sentence); if (!focusEnabled) { focusEnabled = true; render(); } updateReaderFocus(); }));
   app.querySelectorAll<HTMLElement>("[data-environment]").forEach((element) => element.addEventListener("click", () => { getActive().selectedEnvironmentId = element.dataset.environment ?? "ink"; persist(); modal = null; render(); }));
   app.querySelectorAll<HTMLElement>("[data-texture]").forEach((element) => element.addEventListener("click", () => { getActive().texture = element.dataset.texture === "wash" ? "wash" : "drift"; persist(); modal = null; render(); }));
   app.querySelectorAll<HTMLElement>("[data-document]").forEach((element) => element.addEventListener("click", () => { activeId = element.dataset.document ?? activeId; modal = null; persist(); render(); }));
@@ -212,6 +212,21 @@ function wireEvents(): void {
 
 function focusActive(): void {
   document.querySelector<HTMLElement>(`[data-sentence="${activeSentence}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function updateReaderFocus(): void {
+  app.querySelectorAll<HTMLElement>("[data-sentence]").forEach((element) => {
+    const index = Number(element.dataset.sentence);
+    element.classList.toggle("active", index === activeSentence);
+    element.classList.toggle("near", Math.abs(index - activeSentence) === 1);
+    element.classList.toggle("far", Math.abs(index - activeSentence) > 1);
+  });
+  const previous = app.querySelector<HTMLButtonElement>('[data-action="previous"]');
+  const next = app.querySelector<HTMLButtonElement>('[data-action="next"]');
+  const count = app.querySelectorAll("[data-sentence]").length;
+  if (previous) previous.disabled = activeSentence === 0;
+  if (next) next.disabled = activeSentence >= count - 1;
+  focusActive();
 }
 
 async function copySentence(withContext: boolean): Promise<void> {

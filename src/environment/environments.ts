@@ -10,6 +10,7 @@ export interface Environment {
 }
 
 export const environments: Environment[] = [
+  { id: "clean", name: "Clean", note: "the original color wash", colors: ["#142b32", "#1d3f3c", "#243852", "#312946"], washColors: ["#62c6c0", "#83cdb0", "#3c9a69", "#233d85", "#65509e", "#aa617f", "#ca725f", "#c89a4b"], ink: "#fffdf0", paper: "#172227", accent: "#d7d99a" },
   { id: "ink", name: "Ink", note: "graphite · navy · dark teal", colors: ["#11171b", "#1b2c3b", "#21433f", "#263a45"], washColors: ["#29484b", "#356b70", "#37665c", "#244e72", "#343b76", "#4d3e62", "#53604d", "#273a46"], ink: "#edf2eb", paper: "#11191d", accent: "#a8c6b2" },
   { id: "lantern", name: "Lantern", note: "wine · rust · amber", colors: ["#3b1d2b", "#6b302a", "#7c3f36", "#9b683d"], washColors: ["#693d49", "#874b3e", "#8f5b3c", "#a77945", "#704455", "#63384c", "#9a5540", "#765034"], ink: "#fff0dc", paper: "#291c20", accent: "#e3a56c" },
   { id: "rain", name: "Rain Window", note: "slate · violet · cyan", colors: ["#1d2c3a", "#40516a", "#493c61", "#3e6b73"], washColors: ["#3d6978", "#567d8e", "#526d8a", "#4b5b91", "#665d8c", "#4c7480", "#5b8d91", "#415d76"], ink: "#e8f3f2", paper: "#192832", accent: "#a7d8d8" },

@@ -196,7 +196,14 @@ function wireEvents(): void {
     if (action === "export-txt" || action === "export-md") exportDocument(action === "export-md" ? "md" : "txt");
   }));
   app.querySelectorAll<HTMLElement>("[data-sentence]").forEach((element) => element.addEventListener("click", () => { activeSentence = Number(element.dataset.sentence); if (!focusEnabled) { focusEnabled = true; render(); } updateReaderFocus(); }));
-  app.querySelectorAll<HTMLElement>("[data-environment]").forEach((element) => element.addEventListener("click", () => { getActive().selectedEnvironmentId = element.dataset.environment ?? "ink"; persist(); modal = null; render(); }));
+  app.querySelectorAll<HTMLElement>("[data-environment]").forEach((element) => element.addEventListener("click", () => {
+    const environmentId = element.dataset.environment ?? "ink";
+    getActive().selectedEnvironmentId = environmentId;
+    if (environmentId === "clean") getActive().texture = "classic-wash";
+    persist();
+    modal = null;
+    render();
+  }));
   app.querySelectorAll<HTMLElement>("[data-texture]").forEach((element) => element.addEventListener("click", () => { const texture = element.dataset.texture; getActive().texture = texture === "wash" || texture === "classic-wash" ? texture : "drift"; persist(); modal = null; render(); }));
   app.querySelectorAll<HTMLElement>("[data-document]").forEach((element) => element.addEventListener("click", () => { activeId = element.dataset.document ?? activeId; modal = null; persist(); render(); }));
   app.querySelectorAll<HTMLElement>("[data-rename]").forEach((element) => element.addEventListener("click", () => { const item = documents.find((entry) => entry.id === element.dataset.rename); const title = item && window.prompt("Name this room", item.title); if (item && title?.trim()) { item.title = title.trim(); persist(); render(); } }));

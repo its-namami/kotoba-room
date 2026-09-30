@@ -10,7 +10,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline:2px 
 .atmosphere.wash { background:var(--wash-1); animation: color-wash 224s linear infinite; }
 .atmosphere.wash::after { position:absolute; content:""; inset:0; background:linear-gradient(180deg,#0714192e,#07141955); }
 .atmosphere.wash i { display:none; }
-.atmosphere.still i { animation:none; }
+.atmosphere.still { background:
+  radial-gradient(ellipse 75% 60% at 12% 18%, var(--field-2) 0%, transparent 70%),
+  radial-gradient(ellipse 70% 65% at 88% 20%, var(--field-3) 0%, transparent 72%),
+  radial-gradient(ellipse 80% 70% at 68% 100%, var(--field-4) 0%, transparent 70%),
+  var(--paper); }
+.atmosphere.still i { display:none; }
 .atmosphere i { width:68vw; height:68vw; border-radius:48%; filter:blur(100px); opacity:.4; animation: drift 105s ease-in-out infinite alternate; }
 .atmosphere i:nth-child(1) { background:var(--field-1); left:-25vw; top:-35vw; }
 .atmosphere i:nth-child(2) { background:var(--field-2); right:-28vw; top:-8vw; animation-delay:-24s; animation-duration:87s; }

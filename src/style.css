@@ -60,8 +60,8 @@ article { color:var(--ink); font-size:clamp(21px, 2.5vw, 32px); line-height:2.15
 .reading-line.blank { min-height:1.1em; }
 .sentence { border-left:2px solid transparent; cursor:pointer; padding-left:8px; transition:opacity .55s, font-size .55s, color .55s; }
 .sentence.active { border-color:var(--accent); color:var(--ink); font-size:1.07em; opacity:1; }
-.sentence.near { opacity:.78; }
-.sentence.far { opacity:.25; }
+.sentence.near { opacity:.45; }
+.sentence.far { opacity:.16; }
 article:not(.focus-on) .sentence { opacity:1; }
 .paragraph-break { display:block; height:1.4em; }
 .reading-controls { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:22px; margin-top:62px; color:var(--ink); opacity:.55; font-size:10px; }
